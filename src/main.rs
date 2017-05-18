@@ -11,15 +11,33 @@ fn main() {
 
     let secret_number = rand::thread_rng().gen_range(1, 100);
 
-    let mut guess = String::new(); // "::" in this case is a static method.
-    io::stdin().read_line(&mut guess).expect("Failed to read line");
+    loop{
 
-    println!("You guessed: {}", guess);
+        let mut guess = String::new(); // "::" in this case is a static method.
+        io::stdin().read_line(&mut guess)
+            .expect("Failed to read line");
 
-    match guess.cmp(&secret_number) {
-        Ordering::Less    => println!("Too small!"),
-        Ordering::Greater => println!("Too big!"),
-        Ordering::Equal   => println!("You win!"),
+        //"shadowing" the previous guess variable:
+        let guess: u32 = match guess.trim().parse() {
+
+            Ok(num) => num,
+            Err(_) => continue
+
+        };
+
+        println!("You guessed: {}", guess);
+
+        match guess.cmp(&secret_number) {
+            //each of these statements is called an "arm"
+            Ordering::Less => println!("Too small!"),
+            Ordering::Greater => println!("Too big!"),
+            Ordering::Equal => {
+                println!("You're right!");
+                break;
+            }
+
+        }
+
     }
 
     println!("The secret number was: {}", secret_number);
